@@ -7,7 +7,7 @@ import UIKit
 //     = θ(n²)  (等差级数)
 //一般情况: T(n) = θ(nlgn)
 func quickSort(inout list: [Int], startIndex: Int, EndIndex: Int) {
-    //startIndex==EndIndex表明这一部分已排序完成
+    //若startIndex<EndIndex则表明序列至少有2个元素，其他情况直接返回
     guard startIndex < EndIndex else {
         return
     }
@@ -99,7 +99,7 @@ func customQuickSort(inout list: [Int], startIndex: Int, EndIndex: Int, randomHa
         return referenceIndex
     }
     
-    //startIndex==EndIndex表明这一部分已排序完成
+    //若startIndex<EndIndex则表明序列至少有2个元素，其他情况直接返回
     guard startIndex < EndIndex else {
         return
     }
@@ -111,9 +111,9 @@ func customQuickSort(inout list: [Int], startIndex: Int, EndIndex: Int, randomHa
     customQuickSort(&list, startIndex: referenceIndex + 1, EndIndex: EndIndex, randomHandler: randomHandler)
 }
 
-//基本快排
+//朴素快排
 customQuickSort(&testList2, startIndex: 0, EndIndex: testList2.count - 1, randomHandler: nil)
-//随机化快排，自己传入一个获取随机数的闭包，我这边使用了原先定义好的那个
+//随机化快排，自己传入一个获取随机数的闭包，我这边调用了原先定义好的那个
 customQuickSort(&testList2, startIndex: 0, EndIndex: testList2.count - 1) { (range) -> Int in
     return getRandomNumIn(range)
 }
