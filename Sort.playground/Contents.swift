@@ -6,26 +6,26 @@ import UIKit
 //T(n) = T(0) + T(n-1) + θ(n) = θ(1) + T(n-1) + θ(n) = T(n-1) + θ(n)
 //     = θ(n²)  (等差级数)
 //一般情况: T(n) = θ(nlgn)
-func quickSort(inout list: [Int], startIndex: Int, EndIndex: Int) {
+func quickSort(inout list: [Int], startIndex: Int, endIndex: Int) {
     //若startIndex<EndIndex则表明序列至少有2个元素，其他情况直接返回
-    guard startIndex < EndIndex else {
+    guard startIndex < endIndex else {
         return
     }
     //排序，并返回参考点(参考点左侧的数都小于参考点，右侧的都大于参考点)
-    let referenceIndex = divide(&list, startIndex: startIndex, EndIndex: EndIndex)
+    let referenceIndex = divide(&list, startIndex: startIndex, endIndex: endIndex)
     //递归对参考点左边部分排序
-    quickSort(&list, startIndex: startIndex, EndIndex: referenceIndex - 1)
+    quickSort(&list, startIndex: startIndex, endIndex: referenceIndex - 1)
     //递归对参考点右边部分排序
-    quickSort(&list, startIndex: referenceIndex + 1, EndIndex: EndIndex)
+    quickSort(&list, startIndex: referenceIndex + 1, endIndex: endIndex)
 }
 
-func divide(inout list: [Int], startIndex: Int, EndIndex: Int) -> Int {
+func divide(inout list: [Int], startIndex: Int, endIndex: Int) -> Int {
     //用来记录参考点位置(遍历完成之后用来放置序列的第一个数)
     var referenceIndex = startIndex
     //参考点的值(序列中第一个数)
     let referencePoint = list[startIndex]
     //遍历序列，与参考点比较
-    for compareIndex in startIndex+1 ... EndIndex {
+    for compareIndex in startIndex+1 ... endIndex {
         //若小于参考点，就跟referenceIndex后的数交换，referenceIndex前进一位
         if list[compareIndex] < referencePoint {
             (list[referenceIndex], list[compareIndex]) = (list[compareIndex], list[++referenceIndex])
@@ -37,23 +37,38 @@ func divide(inout list: [Int], startIndex: Int, EndIndex: Int) -> Int {
     return referenceIndex
 }
 
-func randomQuickSort(inout list: [Int], startIndex: Int, EndIndex: Int) {
-    guard startIndex < EndIndex else {
+
+//func quickDivide(inout list: [Int], startIndex: Int, endIndex: Int) -> Int {
+//    let referencePoint = list[startIndex]
+//    var referenceIndex = startIndex
+//    var compareIndex = endIndex
+//    while compareIndex > referenceIndex {
+//        if list[compareIndex] < referencePoint {
+//            (list[referenceIndex], list[compareIndex]) = (list[compareIndex], list[++referenceIndex])
+//        }
+//        --compareIndex
+//    }
+//    (list[startIndex], list[referenceIndex]) = (list[referenceIndex], list[startIndex])
+//    return referenceIndex
+//}
+
+func randomQuickSort(inout list: [Int], startIndex: Int, endIndex: Int) {
+    guard startIndex < endIndex else {
         return
     }
     //排序，并返回参考点(参考点左侧的数都小于参考点，右侧的都大于参考点)
-    let referenceIndex = randomDivide(&list, startIndex: startIndex, EndIndex: EndIndex)
+    let referenceIndex = randomDivide(&list, startIndex: startIndex, endIndex: endIndex)
     //递归对参考点左边部分排序
-    randomQuickSort(&list, startIndex: startIndex, EndIndex: referenceIndex - 1)
+    randomQuickSort(&list, startIndex: startIndex, endIndex: referenceIndex - 1)
     //递归对参考点右边部分排序
-    randomQuickSort(&list, startIndex: referenceIndex + 1, EndIndex: EndIndex)
+    randomQuickSort(&list, startIndex: referenceIndex + 1, endIndex: endIndex)
 }
 
-func randomDivide(inout list: [Int], startIndex: Int, EndIndex: Int) -> Int {
-    let random = getRandomNumIn(startIndex ... EndIndex)
+func randomDivide(inout list: [Int], startIndex: Int, endIndex: Int) -> Int {
+    let random = getRandomNumIn(startIndex ... endIndex)
     (list[startIndex], list[random]) = (list[random], list[startIndex])
     
-    return divide(&list, startIndex: startIndex, EndIndex: EndIndex)
+    return divide(&list, startIndex: startIndex, endIndex: endIndex)
 }
 
 func getRandomNumIn(range: Range<Int>) -> Int {
@@ -68,18 +83,19 @@ func getRandomNumIn(range: Range<Int>) -> Int {
 }
 
 //测试数组
-//var testList = [3, 8, 9, 10, 2, 1]
-//quickSort(&testList, startIndex: 0, EndIndex: testList.count - 1)
+var testList = [3, 8, 9, 10, 2, 1]
+quickSort(&testList, startIndex: 0, endIndex: testList.count - 1)
 
 var testList2 = [28, 3, 76, 99, 42, 111, 88, 99, 75]
-randomQuickSort(&testList2, startIndex: 0, EndIndex: testList2.count - 1)
+quickSort(&testList2, startIndex: 0, endIndex: testList2.count - 1)
+randomQuickSort(&testList2, startIndex: 0, endIndex: testList2.count - 1)
 
 
 //高阶函数相关
-func customQuickSort(inout list: [Int], startIndex: Int, EndIndex: Int, randomHandler: ((range: Range<Int>) -> Int)?) {
+func customQuickSort(inout list: [Int], startIndex: Int, endIndex: Int, randomHandler: ((range: Range<Int>) -> Int)?) {
     let divide: () -> Int = {
         if let getRandom = randomHandler {
-            let randomIndex = getRandom(range: startIndex ... EndIndex)
+            let randomIndex = getRandom(range: startIndex ... endIndex)
             (list[startIndex], list[randomIndex]) = (list[randomIndex], list[startIndex])
         }
         //用来记录参考点位置(遍历完成之后用来放置序列的第一个数)
@@ -87,7 +103,7 @@ func customQuickSort(inout list: [Int], startIndex: Int, EndIndex: Int, randomHa
         //参考点的值(序列中第一个数)
         let referencePoint = list[startIndex]
         //遍历序列，与参考点比较
-        for compareIndex in startIndex+1 ... EndIndex {
+        for compareIndex in startIndex+1 ... endIndex {
             //若小于参考点，就跟referenceIndex后的数交换，referenceIndex前进一位
             if list[compareIndex] < referencePoint {
                 (list[referenceIndex], list[compareIndex]) = (list[compareIndex], list[++referenceIndex])
@@ -100,20 +116,20 @@ func customQuickSort(inout list: [Int], startIndex: Int, EndIndex: Int, randomHa
     }
     
     //若startIndex<EndIndex则表明序列至少有2个元素，其他情况直接返回
-    guard startIndex < EndIndex else {
+    guard startIndex < endIndex else {
         return
     }
     //排序，并返回参考点(参考点左侧的数都小于参考点，右侧的都大于参考点)
     let referenceIndex = divide()
     //递归对参考点左边部分排序
-    customQuickSort(&list, startIndex: startIndex, EndIndex: referenceIndex - 1, randomHandler: randomHandler)
+    customQuickSort(&list, startIndex: startIndex, endIndex: referenceIndex - 1, randomHandler: randomHandler)
     //递归对参考点右边部分排序
-    customQuickSort(&list, startIndex: referenceIndex + 1, EndIndex: EndIndex, randomHandler: randomHandler)
+    customQuickSort(&list, startIndex: referenceIndex + 1, endIndex: endIndex, randomHandler: randomHandler)
 }
 
 //朴素快排
-customQuickSort(&testList2, startIndex: 0, EndIndex: testList2.count - 1, randomHandler: nil)
+customQuickSort(&testList2, startIndex: 0, endIndex: testList2.count - 1, randomHandler: nil)
 //随机化快排，自己传入一个获取随机数的闭包，我这边调用了原先定义好的那个
-customQuickSort(&testList2, startIndex: 0, EndIndex: testList2.count - 1) { (range) -> Int in
+customQuickSort(&testList2, startIndex: 0, endIndex: testList2.count - 1) { (range) -> Int in
     return getRandomNumIn(range)
 }
