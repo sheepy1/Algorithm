@@ -1,11 +1,17 @@
 //: Playground - noun: a place where people can play
 
-import UIKit
+import Foundation
 
-//最坏情况(初始数组已排序或逆序): 
-//T(n) = T(0) + T(n-1) + θ(n) = θ(1) + T(n-1) + θ(n) = T(n-1) + θ(n)
-//     = θ(n²)  (等差级数)
-//一般情况: T(n) = θ(nlgn)
+
+/*
+*快速排序
+
+*最坏情况(初始数组已排序或逆序):
+*   T(n) = T(0) + T(n-1) + θ(n) = θ(1) + T(n-1) + θ(n) = T(n-1) + θ(n) = θ(n²)  (等差级数)
+*平均情况: 
+    T(n) = θ(nlgn)
+*/
+
 func quickSort(inout list: [Int], startIndex: Int, endIndex: Int) {
     //若startIndex<EndIndex则表明序列至少有2个元素，其他情况直接返回
     guard startIndex < endIndex else {
@@ -38,20 +44,11 @@ func divide(inout list: [Int], startIndex: Int, endIndex: Int) -> Int {
 }
 
 
-//func quickDivide(inout list: [Int], startIndex: Int, endIndex: Int) -> Int {
-//    let referencePoint = list[startIndex]
-//    var referenceIndex = startIndex
-//    var compareIndex = endIndex
-//    while compareIndex > referenceIndex {
-//        if list[compareIndex] < referencePoint {
-//            (list[referenceIndex], list[compareIndex]) = (list[compareIndex], list[++referenceIndex])
-//        }
-//        --compareIndex
-//    }
-//    (list[startIndex], list[referenceIndex]) = (list[referenceIndex], list[startIndex])
-//    return referenceIndex
-//}
+/*
+*随机化快排
 
+*T(n) = θ(nlgn)
+*/
 func randomQuickSort(inout list: [Int], startIndex: Int, endIndex: Int) {
     guard startIndex < endIndex else {
         return
@@ -81,14 +78,6 @@ func getRandomNumIn(range: Range<Int>) -> Int {
     let randomNum = min + randomDelta
     return randomNum
 }
-
-//测试数组
-var testList = [3, 8, 9, 10, 2, 1]
-quickSort(&testList, startIndex: 0, endIndex: testList.count - 1)
-
-var testList2 = [28, 3, 76, 99, 42, 111, 88, 99, 75]
-quickSort(&testList2, startIndex: 0, endIndex: testList2.count - 1)
-randomQuickSort(&testList2, startIndex: 0, endIndex: testList2.count - 1)
 
 
 //高阶函数相关
@@ -126,6 +115,14 @@ func customQuickSort(inout list: [Int], startIndex: Int, endIndex: Int, randomHa
     //递归对参考点右边部分排序
     customQuickSort(&list, startIndex: referenceIndex + 1, endIndex: endIndex, randomHandler: randomHandler)
 }
+
+//测试数组
+var testList = [3, 8, 9, 10, 2, 1]
+quickSort(&testList, startIndex: 0, endIndex: testList.count - 1)
+
+var testList2 = [28, 3, 76, 99, 42, 111, 88, 99, 75]
+quickSort(&testList2, startIndex: 0, endIndex: testList2.count - 1)
+randomQuickSort(&testList2, startIndex: 0, endIndex: testList2.count - 1)
 
 //朴素快排
 customQuickSort(&testList2, startIndex: 0, endIndex: testList2.count - 1, randomHandler: nil)
