@@ -108,15 +108,30 @@ class Tree<T: Equatable> {
 //    }
 //    
 //}
+func ==<T>(lhs: Element<T>, rhs: Element<T>) -> Bool {
+    return lhs.key == rhs.key && lhs.value == rhs.value
+}
 
+struct Element<T: Equatable>: Equatable {
+    var key: Int?
+    var value: T?
+    init(key: Int?, value: T?) {
+        self.key = key
+        self.value = value
+    }
+    
+    }
 //哈希表
-struct HashTable<T> {
+struct HashTable<T: Equatable> {
+    typealias E = Element<T>
+    
     var size: Int
-    var memory : [T?]
+    var memory : [LinkedList<E>?]
     init(size: Int) {
         self.size = size
-        memory = [T?](count: size, repeatedValue: nil)
+        memory = [LinkedList<E>?](count: size, repeatedValue: nil)
     }
+    
     //假定关键字都是Int
     func hash(key: Int) -> Int {
         return key % size
@@ -124,13 +139,17 @@ struct HashTable<T> {
     
     subscript(key: Int) -> T? {
         get {
-            guard let value = memory[hash(key)] else {
+            guard let linkedList = memory[hash(key)] else {
                 return nil
             }
-            return value
+            let element = Element<T>(key: key, value: nil)
+            return linkedList.search(element).value?.value
         }
         set {
-            memory[hash(key)] = newValue
+            let element = Element<T>(key: key, value: newValue)
+            let linkedList = memory[hash(key)] ?? LinkedList<E>()
+            linkedList.insert(element)
+            memory[hash(key)] = linkedList
         }
         
     }
@@ -140,7 +159,7 @@ struct HashTable<T> {
 //    }
 }
 
-//中序遍历
+//树中序遍历
 func inorderTreeWalk<T>(tree: Tree<T>?) {
     guard let node = tree else {
         return
